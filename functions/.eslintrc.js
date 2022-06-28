@@ -5,13 +5,12 @@ module.exports = {
     node: true,
   },
   extends: [
+    'airbnb-base',
     'eslint:recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     'plugin:import/typescript',
-    'google',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended',
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
@@ -22,16 +21,32 @@ module.exports = {
   ignorePatterns: [
     '/lib/**/*', // Ignore built files.
   ],
-  plugins: ['@typescript-eslint', 'import', 'prettier'],
+  plugins: ['import', 'prefer-arrow'],
   rules: {
-    'linebreak-style': ['error', 'unix'],
-    // 'newline-before-return': 'error',
-    'no-unused-vars': 'warn',
-    'no-console': 'warn',
-    'no-continue': 'off',
-    quotes: ['error', 'single', { avoidEscape: true }],
-    'require-yield': 'error',
-    semi: ['error', 'always'],
+    'no-unused-vars': 'off',
+    'no-use-before-define': 'off',
+    'no-undef': 'off',
+    'no-console': 'off',
+    'no-shadow': 'warn',
+    'no-bitwise': 'warn',
     'import/no-unresolved': 'off',
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
+    'prefer-arrow/prefer-arrow-functions': [
+      'error',
+      {
+        disallowPrototype: true,
+        singleReturnOnly: false,
+        classPropertiesAllowed: false,
+      },
+    ],
   },
 };

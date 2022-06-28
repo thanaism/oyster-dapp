@@ -1,56 +1,48 @@
-import * as functions from 'firebase-functions';
-import * as util from 'ethereumjs-util';
 import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
+import { utils } from 'ethers';
 
 const db = admin.firestore();
 
-// The user will see this message when MetaMask makes a "Signature Request"
-// to the user.
-const readableMessage =
-  'Welcome to nounsfes.com!\n\n' +
-  'Please click "Sign" to sign in to unleash the power of your NFTs.\n\n' +
-  'Nonce:\n';
+// The user will see this message when MetaMask makes a "Signature Request" to the user.
+const readableMessage = (id: string) =>
+  'Welcome to Oyster Portal!\n' +
+  'Please click "Sign" to sign in to unleash the power of your NFTs.\n' +
+  'This request will not trigger a blockchain transaction or cost any gas fees.\n\n' +
+  // 'Your authentication status will reset after 24 hours.'
+  // `Wallet address:\n${address}` +
+  `Nonce:\n${id}`;
 
 export const generateNonce = async (
   data: { account: string },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   context: functions.https.CallableContext,
 ) => {
-  const refNonces = db.collection('nonces');
   const { account } = data;
-  const newData = {
-    account,
-    created: admin.firestore.FieldValue.serverTimestamp(),
-  };
+  const refNonces = db.collection('nonces');
+  const newData = { account, created: admin.firestore.FieldValue.serverTimestamp() };
   const refDoc = await refNonces.add(newData);
-  const uuid = refDoc.id;
-  return { nonce: readableMessage + uuid, uuid };
+  const { id } = refDoc;
+  return { nonce: readableMessage(id), id };
 };
 
 export const verifyNonce = async (
-  data: { signature: string; uuid: string },
+  data: { signature: string; id: string },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   context: functions.https.CallableContext,
 ) => {
-  const { signature, uuid } = data;
-  const message = readableMessage + uuid;
-  const nonce = '\x19Ethereum Signed Message:\n' + message.length + message;
-  const nonceBuffer = util.keccak(Buffer.from(nonce, 'utf-8'));
-  const { v, r, s } = util.fromRpcSig(signature);
-  const pubKey = util.ecrecover(util.toBuffer(nonceBuffer), v, r, s);
-  const addrBuf = util.pubToAddress(pubKey);
-  const account = util.bufferToHex(addrBuf);
-
-  const refNonce = db.collection('nonces').doc(uuid);
+  const { signature, id } = data;
+  const message = readableMessage(id);
+  const account = utils.verifyMessage(message, signature);
+  const refNonce = db.collection('nonces').doc(id);
   const nonceDoc = await refNonce.get();
   const nonceData = nonceDoc.data();
   await refNonce.delete();
-  if (nonceData?.account != account) {
+  if (nonceData?.account !== account) {
     return { error: 'no nonce in the database' };
   }
 
-  const auth = admin.auth();
-  const token = await auth.createCustomToken(account);
+  const token = await admin.auth().createCustomToken(account);
   return { account, token }; // account for debug only
 };
 
@@ -64,7 +56,7 @@ export const deleteNonce = async (
   const refNonce = db.collection('nonces').doc(uuid);
   const nonceDoc = await refNonce.get();
   const nonceData = nonceDoc.data();
-  if (nonceData?.account != account) {
+  if (nonceData?.account !== account) {
     return { error: 'no nonce in the database' };
   }
   await refNonce.delete();
