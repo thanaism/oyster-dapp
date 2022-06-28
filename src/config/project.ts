@@ -1,5 +1,5 @@
 const firebaseConfig = {
-  apiKey: 'AIzaSyCvcRecdQMh95Sf0oUwQ8vUhfdupg36X88',
+  apiKey: 'AIzaSyBLeIJTKKIqfHrXpAeuhtlqc1I9Jf2PMUQ',
   authDomain: 'oyster-773ce.firebaseapp.com',
   projectId: 'oyster-773ce',
   storageBucket: 'oyster-773ce.appspot.com',
