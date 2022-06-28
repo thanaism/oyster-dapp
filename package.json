@@ -1,0 +1,91 @@
+{
+  "name": "oyster",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "deploy": "react-scripts build && firebase deploy --only hosting",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "fix": "npm run -s format && npm run -s lint:fix",
+    "format": "prettier --write --loglevel=warn '{public,src}/**/*.{js,jsx,ts,tsx,html,gql,graphql,json}'",
+    "lint": "npm run -s lint:style; npm run -s lint:es",
+    "lint:fix": "npm run -s lint:style:fix && npm run -s lint:es:fix",
+    "lint:es": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:es:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:conflict": "eslint-config-prettier 'src/**/*.{js,jsx,ts,tsx}'",
+    "lint:style": "stylelint 'src/**/*.{css,less,sass,scss}'",
+    "lint:style:fix": "stylelint --fix 'src/**/*.{css,less,sass,scss}'",
+    "preinstall": "typesync || :"
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.2.1",
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
+    "@firebase/app": "^0.7.26",
+    "@firebase/firestore": "^3.4.10",
+    "@metamask/providers": "^9.0.0",
+    "@reduxjs/toolkit": "^1.8.2",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.0.1",
+    "@testing-library/user-event": "^14.1.0",
+    "@types/jest": "^25.0.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "ethers": "^5.6.9",
+    "firebase": "^9.8.3",
+    "framer-motion": "^6.2.9",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-firebaseui": "^6.0.0",
+    "react-icons": "^3.0.0",
+    "react-redux": "^8.0.2",
+    "react-scripts": "5.0.1",
+    "redux": "^4.2.0",
+    "typescript": "^4.6.3",
+    "web-vitals": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/prettier": "^2.6.3",
+    "@types/stylelint": "^14.0.0",
+    "@types/testing-library__jest-dom": "^5.14.4",
+    "@types/testing-library__user-event": "^4.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.28.0",
+    "@typescript-eslint/parser": "^5.28.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-react": "^7.30.0",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "prettier": "^2.7.1",
+    "stylelint": "^14.9.1",
+    "stylelint-config-recess-order": "^3.0.0",
+    "stylelint-config-standard": "^26.0.0",
+    "stylelint-order": "^5.0.0",
+    "typesync": "^0.9.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

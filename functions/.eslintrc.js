@@ -1,0 +1,37 @@
+module.exports = {
+  root: true,
+  env: {
+    es6: true,
+    node: true,
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
+    'google',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+    'prettier',
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: ['tsconfig.json', 'tsconfig.dev.json'],
+    sourceType: 'module',
+  },
+  ignorePatterns: [
+    '/lib/**/*', // Ignore built files.
+  ],
+  plugins: ['@typescript-eslint', 'import', 'prettier'],
+  rules: {
+    'linebreak-style': ['error', 'unix'],
+    // 'newline-before-return': 'error',
+    'no-unused-vars': 'warn',
+    'no-console': 'warn',
+    'no-continue': 'off',
+    quotes: ['error', 'single', { avoidEscape: true }],
+    'require-yield': 'error',
+    semi: ['error', 'always'],
+    'import/no-unresolved': 'off',
+  },
+};
