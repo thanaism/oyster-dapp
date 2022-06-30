@@ -2,13 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from 'firebase/auth';
 
 export type MetaMaskState = {
   hasEthereum: boolean;
   chainId: string | undefined;
   account: string | undefined;
-  user: User | undefined;
+  user: string | undefined;
 };
 
 const initialState: MetaMaskState = {
@@ -31,7 +30,7 @@ export const metamaskSlice = createSlice({
       ...state,
       chainId: action.payload,
     }),
-    setUser: (state: MetaMaskState, action: PayloadAction<User | undefined>) => ({
+    setUser: (state: MetaMaskState, action: PayloadAction<string | undefined>) => ({
       ...state,
       user: action.payload,
     }),

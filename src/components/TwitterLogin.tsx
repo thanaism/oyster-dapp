@@ -52,8 +52,8 @@ const TwitterLogin: VFC = () => {
     <>
       <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
       <Heading>{message}</Heading>
-      {JSON.stringify(credential)}
-      <Heading>{JSON.stringify(userInfo)}</Heading>
+      {/* {JSON.stringify(credential)}
+      <Heading>{JSON.stringify(userInfo)}</Heading> */}
     </>
   );
 };

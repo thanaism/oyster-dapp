@@ -154,11 +154,37 @@ export const addMumbaiNetworkToWallet = async (): Promise<void> => {
     const { ethereum } = window as unknown as { ethereum: MetaMaskInpageProvider };
     await ethereum.request({
       method: 'wallet_addEthereumChain',
+      params: [
+        {
+          chainId: '0x13881',
+          blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
+          nativeCurrency: {
+            decimals: 18,
+            symbol: 'MATIC',
+          },
+          chainName: 'Mumbai Test Network',
+          rpcUrls: ['https://matic-testnet-archive-rpc.bwarelabs.com'],
+        },
+      ],
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const addKakiCoinAsset = async (metamask: MetaMaskState): Promise<void> => {
+  try {
+    if (metamask.chainId !== ChainIds.MumbaiTestNet) throw Error('Need to switch network...');
+    const { ethereum } = window as unknown as { ethereum: MetaMaskInpageProvider };
+    await ethereum.request({
+      method: 'wallet_watchAsset',
       params: {
-        chainId: 80001,
-        blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
-        chainName: 'Mumbai Test Network',
-        rpcUrls: ['https://matic-testnet-archive-rpc.bwarelabs.com'],
+        type: 'ERC20',
+        options: {
+          address: '0xe87Fc58b4932559d62fc4597b4B2b3F9e14Deaa1',
+          symbol: 'OYSTER',
+          decimals: 18,
+        },
       },
     });
   } catch (e) {

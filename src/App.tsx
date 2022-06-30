@@ -1,38 +1,32 @@
-import { useEffect, VFC } from 'react';
-import { ChainIds, initializeEthereum } from 'utils/metamask';
-
+import { useEffect, FC } from 'react';
+import { initializeEthereum } from 'utils/metamask';
 import { useDispatch, useSelector } from 'react-redux';
 import { MetaMaskState } from 'store/metamaskSlice';
+import { ChakraProvider } from '@chakra-ui/react';
+import { getAuth } from 'firebase/auth';
+import { SplitScreen } from 'components/SplitScreen';
 import Login from 'components/Login';
-import Tokens from 'components/Tokens';
-import { Box, ChakraProvider, Heading } from '@chakra-ui/react';
-import FirebaseAuth from 'components/FirebaseAuth';
-import TwitterLogin from 'components/TwitterLogin';
 
-const App: VFC = () => {
+const App: FC = () => {
   const dispatch = useDispatch();
   const metamask = useSelector((state: MetaMaskState) => state);
 
   useEffect(() => {
     void initializeEthereum(dispatch, metamask);
+    void getAuth().onAuthStateChanged((user) => {
+      if (user) {
+        // printUserInfo());
+        // disableLogin
+      } else {
+        // clearUserInfo();
+        // disableLogout
+      }
+    });
   }, [dispatch, metamask]);
-
-  const networks = Object.fromEntries(Object.entries(ChainIds).map(([k, v]) => [v, k]));
 
   return (
     <ChakraProvider>
-      <Box>
-        <Heading>牡蠣ポータル🦪</Heading>
-        こちらは開発中の画面です…… ・接続先ネットワークID：{metamask?.chainId} <br />
-        ・接続先ネットワーク名：
-        {metamask?.chainId ? JSON.stringify(networks[metamask?.chainId]) : ''} <br />
-        ・ウォレットID：{metamask?.account} <br />
-        <Tokens />
-        <Login />
-      </Box>
-      <FirebaseAuth>
-        <TwitterLogin />
-      </FirebaseAuth>
+      <SplitScreen />
     </ChakraProvider>
   );
 };

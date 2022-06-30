@@ -4,17 +4,25 @@ import { BigNumber, ContractInterface, ethers } from 'ethers';
 import { Dispatch, SetStateAction, useCallback, useEffect, useState, VFC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MetaMaskState } from 'store/metamaskSlice';
-import { ChainIds, displayAccount, hasMetaMask, switchNetwork } from 'utils/metamask';
+import {
+  addKakiCoinAsset,
+  addMumbaiNetworkToWallet,
+  ChainIds,
+  displayAccount,
+  hasMetaMask,
+  switchNetwork,
+} from 'utils/metamask';
+import * as jsonOpenSeaErc1155 from '../abis/OpenSeaERC1155.json';
 
 const kakiBassadorGoldId =
   '43036373961938536366575155881670300754799737399724292781116150638386360615012';
 const kakiBassadorSilverId =
   '43036373961938536366575155881670300754799737399724292781116150639485872242788';
-const kakiCoinId = '43036373961938536366575155881670300754799737399724292781116150637286848988136';
+const kakiCoinProvisionalId =
+  '43036373961938536366575155881670300754799737399724292781116150637286848988136';
 
 const OpenSeaERC1155 = {
-  // eslint-disable-next-line global-require, @typescript-eslint/no-unsafe-assignment
-  abi: require('../abis/OpenSeaERC1155.json'),
+  abi: jsonOpenSeaErc1155,
   address: '0x2953399124F0cBB46d2CbACD8A89cF0599974963',
   // address: '0x88B48F654c30e99bc2e4A1559b4Dcf1aD93FA656', // thanaism
 };
@@ -71,7 +79,7 @@ const Tokens: VFC = () => {
     };
     void fetchCount(kakiBassadorGoldId, setGoldBadgeCount);
     void fetchCount(kakiBassadorSilverId, setSilverBadgeCount);
-    void fetchCount(kakiCoinId, setCoinCount);
+    void fetchCount(kakiCoinProvisionalId, setCoinCount);
     setCounterMessage('');
   }, [metamask]);
 
@@ -193,10 +201,13 @@ const Tokens: VFC = () => {
           <Button onClick={switchToPolygon}>Polygonネットワークに切替</Button>
         </>
       ) : (
-        <Box>{counterMessage}</Box>
+        <Box>
+          {counterMessage}
+          <Button onClick={() => addKakiCoinAsset(metamask)}>牡蠣コインをasset一覧に表示</Button>
+          <Button onClick={addMumbaiNetworkToWallet}>MumbaiテストネットをMetaMaskに追加</Button>
+        </Box>
       )}
     </>
   );
 };
-
 export default Tokens;

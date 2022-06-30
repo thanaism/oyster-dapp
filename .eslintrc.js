@@ -39,6 +39,10 @@ module.exports = {
     '@typescript-eslint/no-unsafe-return': 'warn',
     'no-nested-ternary': 'warn',
     'no-console': 'off',
+    'no-alert': 'off',
+    'no-shadow': 'warn',
+    'no-use-before-define': 'warn',
+    'react/jsx-curly-brace-presence': 'off',
     'react/function-component-definition': 'off',
     '@typescript-eslint/no-misused-promises': [
       'error',
