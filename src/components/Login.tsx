@@ -94,6 +94,7 @@ export const Login: FC = () => {
           color="white"
           _hover={{ bg: 'blue.500' }}
           onClick={connect}
+          isLoading={isBusy}
         >
           MetaMaskへ接続
         </Button>
@@ -107,6 +108,7 @@ export const Login: FC = () => {
           color="white"
           _hover={{ bg: 'blue.500' }}
           onClick={signIn}
+          isLoading={isBusy}
         >
           深海へ行く！
         </Button>
