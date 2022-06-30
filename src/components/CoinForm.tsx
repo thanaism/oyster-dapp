@@ -69,7 +69,7 @@ export const CoinForm: FC = () => {
             _hover={{
               bg: 'blue.500',
             }}
-            isDisabled={!phone && !order && !enabled}
+            isLoading={!enabled}
             onClick={async () => {
               setEnabled(false);
               try {
