@@ -9,3 +9,4 @@ exportIfNeeded('verifyNonce', 'nonces/verifyNonce', exports);
 exportIfNeeded('generateNonce', 'nonces/generateNonce', exports);
 exportIfNeeded('deleteNonce', 'nonces/deleteNonce', exports);
 exportIfNeeded('transfer', 'contracts/transfer', exports);
+exportIfNeeded('receiveShopifyWebhook', 'utils/receiveShopifyWebhook', exports);
