@@ -26,7 +26,7 @@ export const transfer = async (
   if (contractAddress == null || apiKey == null || privateKey == null)
     return { error: 'missing environment variables' };
 
-  const { to, amount, order, phone } = data;
+  const { to, order, phone } = data;
 
   // const address = context.auth.uid;
   // if (utils.getAddress(address) !== utils.getAddress(to)) return { error: 'address mismatch' };
@@ -38,6 +38,8 @@ export const transfer = async (
   if (orderData == null) return { error: 'no order in the database' };
   if (orderData?.phone !== phone) return { error: 'wrong phone number' };
   if (orderData?.used) return { error: 'already used' };
+  const { price } = orderData;
+  const flooredPrice = ((price / 100) | 0) * 10;
   await refOrder.set({ used: true, address: to }, { merge: true });
 
   const provider = new providers.AlchemyProvider('maticmum', apiKey);
@@ -46,7 +48,7 @@ export const transfer = async (
 
   try {
     const contractWithSigner = contract.connect(wallet);
-    const txn = await contractWithSigner.transfer(to, utils.parseEther(amount));
+    const txn = await contractWithSigner.transfer(to, utils.parseEther(String(flooredPrice)));
     if (txn == null) throw Error('Error submitting transaction');
     return { hash: txn.hash };
   } catch (e) {
