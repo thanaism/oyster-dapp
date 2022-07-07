@@ -181,7 +181,7 @@ export const addKakiCoinAsset = async (metamask: MetaMaskState): Promise<void> =
       params: {
         type: 'ERC20',
         options: {
-          address: '0xe87Fc58b4932559d62fc4597b4B2b3F9e14Deaa1',
+          address: '0x23f84887e93CDbaCF6126912C34fA452C02e8302',
           symbol: 'OYSTER',
           decimals: 18,
         },
