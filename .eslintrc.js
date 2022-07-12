@@ -37,6 +37,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     '@typescript-eslint/no-unsafe-call': 'warn',
     '@typescript-eslint/no-unsafe-return': 'warn',
+    'prefer-template': 'warn',
     'no-nested-ternary': 'warn',
     'no-console': 'off',
     'no-alert': 'off',
@@ -112,7 +113,8 @@ module.exports = {
       },
     ],
     'react/jsx-props-no-spreading': [
-      'error',
+      // 'error',
+      'warn',
       {
         html: 'enforce',
         custom: 'enforce',
