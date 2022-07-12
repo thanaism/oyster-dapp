@@ -1,11 +1,15 @@
-import { useEffect, FC } from 'react';
+/* eslint-disable react/jsx-no-constructed-context-values */
+import { useEffect, FC, useState } from 'react';
 import { initializeEthereum } from 'utils/metamask';
 import { useDispatch, useSelector } from 'react-redux';
 import { MetaMaskState } from 'store/metamaskSlice';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, Text } from '@chakra-ui/react';
 import { getAuth } from 'firebase/auth';
 import { SplitScreen } from 'components/SplitScreen';
-import Login from 'components/Login';
+import TwitterLogin from 'components/TwitterLogin';
+import FirebaseAuth from 'components/FirebaseAuth';
+import EmojiPickerPopover from 'components/EmojiPicker';
+import Fonts from 'utils/fonts';
 
 const App: FC = () => {
   const dispatch = useDispatch();
@@ -26,6 +30,7 @@ const App: FC = () => {
 
   return (
     <ChakraProvider>
+      <Fonts />
       <SplitScreen />
     </ChakraProvider>
   );
