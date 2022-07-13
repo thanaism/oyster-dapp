@@ -9,12 +9,13 @@ export const SplitScreen = () => {
 
   return (
     <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
-      <Flex p={8} flex={1} align={'center'} justify={'center'}>
+      <Flex p={{ base: 3, md: 8 }} flex={1} align={'center'} justify={'center'}>
         <Stack spacing={6} w={'full'} maxW={'lg'}>
-          <Heading fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}>
+          <Heading fontSize={{ base: '5xl', md: '6xl', lg: '7xl' }}>
             <Text
               as={'span'}
               position={'relative'}
+              fontFamily={'Knewave'}
               _after={{
                 content: "''",
                 width: 'full',
@@ -26,11 +27,11 @@ export const SplitScreen = () => {
                 zIndex: -1,
               }}
             >
-              AbyssCrypto
+              ABYSS CRYPTO
             </Text>
             <br />{' '}
-            <Text color={'blue.400'} as={'span'}>
-              Oyster Portal🦪
+            <Text fontFamily={'Knewave'} color={'blue.400'} as={'span'}>
+              KAKI Portal
             </Text>{' '}
           </Heading>
           <Text fontSize={{ base: 'md', lg: 'lg' }} color={'gray.500'}>
@@ -38,10 +39,11 @@ export const SplitScreen = () => {
               as="a"
               href="https://kakiwakatenokai.myshopify.com/"
               textDecorationLine={'underline'}
+              target={'_blank'}
             >
               牡蠣若手の会のECサイト
             </Text>
-            から牡蠣を購入された方は牡蠣コインを入手できます。さあ、深海に行きましょう！
+            から牡蠣を購入された方はKAKIコインを入手できます。さあ、深海に行きましょう！
           </Text>
           {metamask?.user != null ? <CoinForm /> : ''}
           <Login />
