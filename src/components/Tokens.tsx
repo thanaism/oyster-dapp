@@ -188,7 +188,7 @@ const Tokens: VFC = () => {
           <br />
           ・牡蠣バサダーシルバーバッジ保有数：{silverBadgeCount}
           <br />
-          ・牡蠣コイン保有数：{coinCount}
+          ・KAKIコイン保有数：{coinCount}
           <br />
         </>
       ) : (
@@ -203,7 +203,7 @@ const Tokens: VFC = () => {
       ) : (
         <Box>
           {counterMessage}
-          <Button onClick={() => addKakiCoinAsset(metamask)}>牡蠣コインをasset一覧に表示</Button>
+          <Button onClick={() => addKakiCoinAsset(metamask)}>KAKIコインをasset一覧に表示</Button>
           <Button onClick={addMumbaiNetworkToWallet}>MumbaiテストネットをMetaMaskに追加</Button>
         </Box>
       )}
