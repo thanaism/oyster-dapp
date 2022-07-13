@@ -149,12 +149,17 @@ export const Login: FC = () => {
           _hover={{ bg: 'blue.300' }}
           onClick={() => addKakiCoinAsset(metamask)}
         >
-          牡蠣コインを設定
+          KAKIコインを設定
         </Button>
       ) : (
         ''
       )}
-      <Button rounded={'full'} as="a" href="https://opensea.io/collection/abysscrypto-polygon">
+      <Button
+        rounded={'full'}
+        as="a"
+        href="https://opensea.io/collection/abysscrypto-polygon"
+        target={'blank'}
+      >
         NFT購入
       </Button>
     </Stack>
