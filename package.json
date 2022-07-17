@@ -29,6 +29,7 @@
     "@emotion/styled": "^11.0.0",
     "@firebase/app": "^0.7.26",
     "@firebase/firestore": "^3.4.10",
+    "@metamask/detect-provider": "^1.2.0",
     "@metamask/providers": "^9.0.0",
     "@reduxjs/toolkit": "^1.8.2",
     "@testing-library/jest-dom": "^5.16.4",
@@ -46,8 +47,8 @@
     "react-dom": "^18.1.0",
     "react-firebaseui": "^6.0.0",
     "react-icons": "^4.4.0",
-    "react-redux": "^8.0.2",
     "react-scripts": "5.0.1",
+    "recoil": "^0.7.4",
     "redux": "^4.2.0",
     "typescript": "^4.6.3",
     "web-vitals": "^0.2.2"

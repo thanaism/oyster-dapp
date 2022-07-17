@@ -1,10 +1,11 @@
+/* eslint-disable no-console, no-alert */
 import { Button, Stack } from '@chakra-ui/react';
 import { MetaMaskInpageProvider } from '@metamask/providers';
+import { metamaskAddress, metamaskChainId, metamaskVerifiedAddress } from 'atoms/metamaskState';
 import { signInWithCustomToken } from 'firebase/auth';
 import { useState, FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { metamaskSlice, MetaMaskState } from 'store/metamaskSlice';
-import { deleteNonce, generateNonce, transfer, verifyNonce } from 'utils/functions';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { deleteNonce, generateNonce, verifyNonce } from 'utils/functions';
 import {
   addKakiCoinAsset,
   addMumbaiNetworkToWallet,
@@ -13,12 +14,13 @@ import {
   requestAccount,
 } from 'utils/metamask';
 import { auth } from '../utils/firebase';
+import { BlueButton, LightBlueButton, RedButton } from './Buttons';
 
 export const Login: FC = () => {
   const [isBusy, setIsBusy] = useState(false);
-  const dispatch = useDispatch();
-  const { actions } = metamaskSlice;
-  const metamask = useSelector((state: MetaMaskState) => state);
+  const [user, setUser] = useRecoilState(metamaskVerifiedAddress);
+  const account = useRecoilValue(metamaskAddress);
+  const chainId = useRecoilValue(metamaskChainId);
 
   const connect = async () => {
     if (!hasMetaMask()) {
@@ -37,10 +39,8 @@ export const Login: FC = () => {
 
   const signIn = async () => {
     const { ethereum } = window as unknown as { ethereum: MetaMaskInpageProvider };
-    // Step 1: We get a nonce from the server
-    // setIsBusy('サーバーに認証用メッセージを要求しています...');
     setIsBusy(true);
-    const address = metamask?.account;
+    const address = account;
     const result = await generateNonce({ address });
     // eslint-disable-next-line no-unsafe-optional-chaining
     const { message, nonce } = (result as { data: { message: string; nonce: string } })?.data;
@@ -48,31 +48,23 @@ export const Login: FC = () => {
     console.log('signIn: nonce/message', nonce, message);
 
     try {
-      // Step 2: We ask the user to sign this nonce
-      // setIsBusy('MetaMask上での署名（Sign）を待機しています...');
       const signature = await ethereum.request({
         method: 'personal_sign',
         params: [message, address],
       });
 
-      // Step 3: We ask the server to verify the signature and get custom token
       const result2 = await verifyNonce({ signature, nonce });
-      console.log(result2.data);
       const { token } = (result2 as { data: { token: string } }).data;
       console.log('signIn: token', token);
       if (token == null) throw Error('token is empty');
       const userCredential = await signInWithCustomToken(auth, token);
       console.log(userCredential);
-      console.log(userCredential.user);
-      dispatch(actions.setUser(userCredential.user.uid));
-      // dispatch(actions.setUser(userCredential.user));
+      setUser(userCredential.user.uid);
     } catch (e) {
       console.error(e);
       alert('認証に失敗しました');
-      // setIsBusy('認証をキャンセルしています...');
       try {
         await deleteNonce({ address, nonce });
-        // eslint-disable-next-line no-shadow
       } catch (e) {
         console.error(e);
       }
@@ -82,83 +74,43 @@ export const Login: FC = () => {
 
   const signOut = async () => {
     await auth.signOut();
-    dispatch(actions.setUser(undefined));
+    setUser(undefined);
   };
 
   return (
     <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
-      {metamask?.account == null ? (
-        <Button
-          rounded="full"
-          bg="blue.400"
-          color="white"
-          _hover={{ bg: 'blue.500' }}
-          onClick={connect}
-          isLoading={isBusy}
-        >
+      {account == null ? (
+        <BlueButton onClick={connect} isLoading={isBusy}>
           MetaMaskへ接続
-        </Button>
+        </BlueButton>
       ) : (
         ''
       )}
-      {metamask?.account != null && metamask?.user == null ? (
-        <Button
-          rounded="full"
-          bg="blue.400"
-          color="white"
-          _hover={{ bg: 'blue.500' }}
-          onClick={signIn}
-          isLoading={isBusy}
-        >
+      {account != null && user == null ? (
+        <BlueButton onClick={signIn} isLoading={isBusy}>
           深海へ行く！
-        </Button>
+        </BlueButton>
       ) : (
         ''
       )}
-      {metamask?.user != null ? (
-        <Button
-          rounded="full"
-          bg="red.400"
-          color="white"
-          _hover={{ bg: 'red.500' }}
-          onClick={signOut}
-        >
-          ログアウト
-        </Button>
+      {user != null ? <RedButton onClick={signOut}>ログアウト</RedButton> : ''}
+      {user != null && chainId !== ChainIds.MumbaiTestNet ? (
+        <BlueButton onClick={addMumbaiNetworkToWallet}>Mumbaiに切り替え</BlueButton>
       ) : (
         ''
       )}
-      {metamask?.user != null && metamask?.chainId !== ChainIds.MumbaiTestNet ? (
-        <Button
-          rounded="full"
-          bg="blue.400"
-          color="white"
-          _hover={{ bg: 'blue.500' }}
-          onClick={addMumbaiNetworkToWallet}
-        >
-          Mumbaiに切り替え
-        </Button>
-      ) : (
-        ''
-      )}
-      {metamask?.user != null && metamask?.chainId === ChainIds.MumbaiTestNet ? (
-        <Button
-          rounded="full"
-          bg="blue.200"
-          color="white"
-          _hover={{ bg: 'blue.300' }}
-          onClick={() => addKakiCoinAsset(metamask)}
-        >
+      {user != null && chainId === ChainIds.MumbaiTestNet ? (
+        <LightBlueButton onClick={() => addKakiCoinAsset(chainId)}>
           KAKIコインを設定
-        </Button>
+        </LightBlueButton>
       ) : (
         ''
       )}
       <Button
-        rounded={'full'}
+        rounded="full"
         as="a"
         href="https://opensea.io/collection/abysscrypto-polygon"
-        target={'blank'}
+        target="blank"
       >
         NFT購入
       </Button>

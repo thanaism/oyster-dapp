@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import Picker, { IEmojiPickerProps } from 'emoji-picker-react';
 import {
+  Button,
   Icon,
   Popover,
   PopoverCloseButton,
@@ -8,14 +9,13 @@ import {
   PopoverTrigger,
 } from '@chakra-ui/react';
 import { BsEmojiSunglasses } from 'react-icons/bs';
-import { RoundedButton } from './Buttons';
 
 const EmojiPickerPopover: FC<IEmojiPickerProps> = (props) => (
   <Popover>
     <PopoverTrigger>
-      <RoundedButton>
+      <Button rounded="full">
         <Icon as={BsEmojiSunglasses} />
-      </RoundedButton>
+      </Button>
     </PopoverTrigger>
     <PopoverContent maxWidth={0} borderStyle="none">
       <PopoverCloseButton />

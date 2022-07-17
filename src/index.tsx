@@ -1,17 +1,14 @@
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import { metamaskSlice } from 'store/metamaskSlice';
 import App from './App';
 
-const store = configureStore({ reducer: metamaskSlice.reducer });
+const container = document.getElementById('root');
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(container!);
 
-ReactDOM.render(
+root.render(
   <StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <App />
   </StrictMode>,
-  document.getElementById('root'),
 );

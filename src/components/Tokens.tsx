@@ -1,14 +1,13 @@
 import { Box, Button } from '@chakra-ui/react';
 import { BaseProvider } from '@metamask/providers';
+import { metamaskAddress, metamaskChainId } from 'atoms/metamaskState';
 import { BigNumber, ContractInterface, ethers } from 'ethers';
-import { Dispatch, SetStateAction, useCallback, useEffect, useState, VFC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { MetaMaskState } from 'store/metamaskSlice';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState, FC } from 'react';
+import { useRecoilValue } from 'recoil';
 import {
   addKakiCoinAsset,
   addMumbaiNetworkToWallet,
   ChainIds,
-  displayAccount,
   hasMetaMask,
   switchNetwork,
 } from 'utils/metamask';
@@ -33,18 +32,17 @@ const OysterBasic = {
   address: '0x3e0d2EAD707cC4972348B7aD5328dc91FA15D5cB',
 };
 
-const Tokens: VFC = () => {
-  const metamask = useSelector((state: MetaMaskState) => state);
-
+const Tokens: FC = () => {
   const [goldBadgeCount, setGoldBadgeCount] = useState(0);
   const [silverBadgeCount, setSilverBadgeCount] = useState(0);
   const [coinCount, setCoinCount] = useState(0);
   const [counterMessage, setCounterMessage] = useState('');
   const [isPolygon, setIsPolygon] = useState(false);
 
-  useEffect(() => {
-    const { account, chainId } = metamask;
+  const account = useRecoilValue(metamaskAddress);
+  const chainId = useRecoilValue(metamaskChainId);
 
+  useEffect(() => {
     if (!hasMetaMask()) {
       setCounterMessage('MetaMask拡張機能をインストールしてください。');
       return;
@@ -81,7 +79,7 @@ const Tokens: VFC = () => {
     void fetchCount(kakiBassadorSilverId, setSilverBadgeCount);
     void fetchCount(kakiCoinProvisionalId, setCoinCount);
     setCounterMessage('');
-  }, [metamask]);
+  }, []);
 
   const itemId0 = ethers.BigNumber.from(
     '43036373961938536366575155881670300754799737399724292781116150475658639704065',
@@ -102,15 +100,12 @@ const Tokens: VFC = () => {
   const [oysterBasicCount, setOysterBasicCount] = useState(0);
 
   const tokenGate = useCallback(() => {
-    const { account, chainId } = metamask;
     if (!hasMetaMask()) {
       return 'pleaseInstall';
     }
     const { ethereum } = window as unknown as { ethereum: BaseProvider };
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-
-    console.log('** recomputing', displayAccount(metamask) || 'N/A', chainId);
 
     if (!account) return 'pleaseConnect';
 
@@ -156,13 +151,11 @@ const Tokens: VFC = () => {
     };
     void fetchAbyssCrypto();
     return 'active';
-  }, [itemIds, metamask]);
-
-  const dispatch = useDispatch();
+  }, [itemIds]);
 
   const switchToPolygon = async () => {
     console.log('switchToPolygon called');
-    await switchNetwork(ChainIds.Polygon, dispatch);
+    await switchNetwork(ChainIds.Polygon);
   };
 
   // switch (tokenGate()) {
@@ -203,7 +196,7 @@ const Tokens: VFC = () => {
       ) : (
         <Box>
           {counterMessage}
-          <Button onClick={() => addKakiCoinAsset(metamask)}>KAKIコインをasset一覧に表示</Button>
+          <Button onClick={() => addKakiCoinAsset(chainId!)}>KAKIコインをasset一覧に表示</Button>
           <Button onClick={addMumbaiNetworkToWallet}>MumbaiテストネットをMetaMaskに追加</Button>
         </Box>
       )}
