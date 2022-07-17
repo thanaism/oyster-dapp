@@ -1,17 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type MetaMaskState = {
-  hasEthereum: boolean;
+  hasMetaMask: boolean;
   chainId: string | undefined;
   account: string | undefined;
   user: string | undefined;
 };
 
 const initialState: MetaMaskState = {
-  hasEthereum: false,
+  hasMetaMask: false,
   chainId: undefined,
   account: undefined,
   user: undefined,
@@ -21,10 +18,9 @@ export const metamaskSlice = createSlice({
   name: 'metamask',
   initialState,
   reducers: {
-    setHasEthereum: (state: MetaMaskState, action: PayloadAction<boolean>) => ({
+    setHasMetaMask: (state: MetaMaskState, action: PayloadAction<boolean>) => ({
       ...state,
-      hasEthereum: action.payload,
-      // if (state.ethereum) startMonitoringMetamask();
+      hasMetaMask: action.payload,
     }),
     setChainId: (state: MetaMaskState, action: PayloadAction<string | undefined>) => ({
       ...state,
@@ -37,7 +33,6 @@ export const metamaskSlice = createSlice({
     setAccount: (state: MetaMaskState, action: PayloadAction<string | undefined>) => ({
       ...state,
       account: action.payload,
-      // if (state.user) auth.signOut();
     }),
   },
 });

@@ -100,8 +100,8 @@ export const initializeEthereum = (
   metamask: MetaMaskState,
 ): void => {
   const setEthereum = () => {
-    if (!metamask?.hasEthereum) {
-      dispatch(actions.setHasEthereum(true));
+    if (!metamask?.hasMetaMask) {
+      dispatch(actions.setHasMetaMask(true));
       void startMonitoringMetamask(dispatch, metamask);
       void getChainId(dispatch);
     }
