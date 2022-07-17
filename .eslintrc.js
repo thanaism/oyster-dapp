@@ -27,24 +27,27 @@ module.exports = {
   plugins: ['@typescript-eslint', 'import', 'jsx-a11y', 'prefer-arrow', 'react', 'react-hooks'],
   root: true,
   rules: {
-    // occur error in `import React from 'react'` with react-scripts 4.0.1
-    // 'no-use-before-define': 'off',
+    'no-use-before-define': 'off',
+    // Conflicts with prefer-arrow
+    'react/function-component-definition': 'off',
 
-    '@typescript-eslint/no-use-before-define': ['error'],
-
-    // add @ 2022/6/10
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': [
+      'warn',
+      {
+        additionalHooks: '(useRecoilCallback|useRecoilTransaction_UNSTABLE)',
+      },
+    ],
+    'no-nested-ternary': 'warn',
+    'no-console': 'warn',
+    'no-alert': 'warn',
+    'no-shadow': 'warn',
+    'prefer-template': 'warn',
+    'react/jsx-curly-brace-presence': 'warn',
     '@typescript-eslint/no-unsafe-assignment': 'warn',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     '@typescript-eslint/no-unsafe-call': 'warn',
     '@typescript-eslint/no-unsafe-return': 'warn',
-    'prefer-template': 'warn',
-    'no-nested-ternary': 'warn',
-    'no-console': 'off',
-    'no-alert': 'off',
-    'no-shadow': 'warn',
-    'no-use-before-define': 'warn',
-    'react/jsx-curly-brace-presence': 'off',
-    'react/function-component-definition': 'off',
     '@typescript-eslint/no-misused-promises': [
       'error',
       {
@@ -54,7 +57,6 @@ module.exports = {
         },
       },
     ],
-
     'lines-between-class-members': [
       'error',
       'always',
@@ -68,26 +70,7 @@ module.exports = {
         allowAsStatement: true,
       },
     ],
-
-    // 'padding-line-between-statements': [
-    //   'error',
-    //   {
-    //     blankLine: 'always',
-    //     prev: '*',
-    //     next: 'return',
-    //   },
-    // ],
-    // '@typescript-eslint/no-unused-vars': [
-    //   'error',
-    //   {
-    //     vars: 'all',
-    //     args: 'after-used',
-    //     argsIgnorePattern: '_',
-    //     ignoreRestSiblings: false,
-    //     varsIgnorePattern: '_',
-    //   },
-    // ],
-    'import/prefer-default-export': 'warn',
+    'import/prefer-default-export': 'off',
     'import/extensions': [
       'error',
       'ignorePackages',
@@ -113,7 +96,6 @@ module.exports = {
       },
     ],
     'react/jsx-props-no-spreading': [
-      // 'error',
       'warn',
       {
         html: 'enforce',
