@@ -5,7 +5,7 @@ export const metamaskExistence = atom({
   default: false,
 });
 
-export const metamaskChainId = atom<string | undefined>({
+export const metamaskChainId = atom<string | undefined | null>({
   key: 'MetaMaskChainId',
   default: undefined,
 });

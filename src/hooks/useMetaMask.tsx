@@ -32,6 +32,7 @@ export const useMetaMask = () => {
 
       const address = await getAccount();
       setAccount(address);
+      setChainId(provider.chainId);
 
       provider.on('accountsChanged', ((accounts: string[]) => {
         console.log('accountsChanged', accounts.length);
