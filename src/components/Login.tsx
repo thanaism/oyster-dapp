@@ -1,10 +1,9 @@
-/* eslint-disable no-console, no-alert */
 import { Button, Stack } from '@chakra-ui/react';
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { metamaskAddress, metamaskChainId, metamaskVerifiedAddress } from 'atoms/metamaskState';
 import { signInWithCustomToken } from 'firebase/auth';
 import { useState, FC } from 'react';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { deleteNonce, generateNonce, verifyNonce } from 'utils/functions';
 import {
   addKakiCoinAsset,
@@ -73,8 +72,13 @@ export const Login: FC = () => {
   };
 
   const signOut = async () => {
-    await auth.signOut();
-    setUser(undefined);
+    try {
+      await auth.signOut();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setUser(undefined);
+    }
   };
 
   return (

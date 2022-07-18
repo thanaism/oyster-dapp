@@ -18,5 +18,5 @@
     "baseUrl": "src",
     "downlevelIteration": true
   },
-  "include": ["src", "api", "functions/src/config", "functions/src/utils"]
+  "include": ["src"]
 }

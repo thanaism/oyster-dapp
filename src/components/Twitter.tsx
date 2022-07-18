@@ -1,11 +1,3 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable no-shadow */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable no-console */
-/* eslint-disable no-alert */
 import { Button, FormControl, FormLabel, Icon, Stack, Textarea } from '@chakra-ui/react';
 import {
   getAuth,
@@ -57,21 +49,26 @@ const TwitterLogin: FC = () => {
 
   useEffect(() => {
     const auth = getAuth();
-    void getRedirectResult(auth).then((result) => {
-      if (result != null) {
-        console.log('redirect result:', result);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        setCredential(result as any);
-      }
-    });
+    void getRedirectResult(auth)
+      .then((result) => {
+        if (result == null) return;
+        const credential = TwitterAuthProvider.credentialFromResult(result);
+        if (credential == null) return;
+        console.log('credential:', credential);
+        setCredential(credential);
+      })
+      .catch((error) => {
+        console.log('error', error);
+        setCredential(undefined);
+      });
   });
 
   const submit = async () => {
     setEnabled(false);
     try {
       const to = account!;
-      console.log(JSON.stringify((credential as any).credential));
-      const { accessToken, secret: accessSecret } = (credential as any).credential;
+      const accessToken = credential!.accessToken!;
+      const accessSecret = credential!.secret!;
       await requestTweet({ to, accessToken, accessSecret, text });
     } catch {
       alert('取得に失敗しました');
