@@ -1,16 +1,15 @@
 import { Button, Center, FormControl, FormLabel, Icon, Stack, Textarea } from '@chakra-ui/react';
 import {
   getAuth,
-  getRedirectResult,
   linkWithPopup,
   signInWithRedirect,
   TwitterAuthProvider,
   unlink,
 } from 'firebase/auth';
-import { useState, FC, useEffect } from 'react';
+import { FC, useState } from 'react';
 import { FaUndo } from 'react-icons/fa';
 import { tweet } from 'utils/functions';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { twitterCredential } from 'atoms/twitterState';
 import { IEmojiData } from 'emoji-picker-react';
 import { metamaskAddress } from 'atoms/metamaskState';
@@ -34,7 +33,7 @@ const requestTweet = async (data: {
 
 const TwitterLogin: FC = () => {
   const account = useRecoilValue(metamaskAddress);
-  const [credential, setCredential] = useRecoilState(twitterCredential);
+  const credential = useRecoilValue(twitterCredential);
   const [enabled, setEnabled] = useState(true);
 
   const baseMessage =
@@ -46,22 +45,6 @@ const TwitterLogin: FC = () => {
   const hashTag = () => `\n\n${hashTags[Math.floor(Math.random() * hashTags.length)]}`;
   const [text, setText] = useState(baseMessage + hashTag());
   const [start, setStart] = useState(0);
-
-  useEffect(() => {
-    const auth = getAuth();
-    void getRedirectResult(auth)
-      .then((result) => {
-        if (result == null) return;
-        const credential = TwitterAuthProvider.credentialFromResult(result);
-        if (credential == null) return;
-        console.log('credential:', credential);
-        setCredential(credential);
-      })
-      .catch((error) => {
-        console.log('error', error);
-        setCredential(undefined);
-      });
-  });
 
   const submit = async () => {
     setEnabled(false);
