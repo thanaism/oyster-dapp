@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Icon, Stack, Textarea } from '@chakra-ui/react';
+import { Button, Center, FormControl, FormLabel, Icon, Stack, Textarea } from '@chakra-ui/react';
 import {
   getAuth,
   getRedirectResult,
@@ -129,15 +129,18 @@ const TwitterLogin: FC = () => {
 };
 
 const TwitterSignInButton = () => (
-  <BlueButton
-    onClick={async () => {
-      const auth = getAuth();
-      const provider = new TwitterAuthProvider();
-      await signInWithRedirect(auth, provider);
-    }}
-  >
-    Sign in with Twitter
-  </BlueButton>
+  <Center marginTop="4">
+    <BlueButton
+      size="lg"
+      onClick={async () => {
+        const auth = getAuth();
+        const provider = new TwitterAuthProvider();
+        await signInWithRedirect(auth, provider);
+      }}
+    >
+      Sign in with Twitter
+    </BlueButton>
+  </Center>
 );
 
 const LinkWithPopupButton = () => (
