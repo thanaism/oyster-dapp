@@ -1,14 +1,13 @@
 import { Box, Button } from '@chakra-ui/react';
 import { BaseProvider } from '@metamask/providers';
-import { metamaskAddress, metamaskChainId } from 'atoms/metamaskState';
+import { metamaskAddress, metamaskChainId, metamaskExistence } from 'atoms/metamaskState';
 import { BigNumber, ContractInterface, ethers } from 'ethers';
 import { Dispatch, SetStateAction, useCallback, useEffect, useState, FC } from 'react';
 import { useRecoilValue } from 'recoil';
 import {
-  addKakiCoinAsset,
+  registerKakiCoinWithWallet,
   addMumbaiNetworkToWallet,
   ChainIds,
-  hasMetaMask,
   switchNetwork,
 } from 'utils/metamask';
 import * as jsonOpenSeaErc1155 from '../abis/OpenSeaERC1155.json';
@@ -41,9 +40,10 @@ const Tokens: FC = () => {
 
   const account = useRecoilValue(metamaskAddress);
   const chainId = useRecoilValue(metamaskChainId);
+  const hasMetaMask = useRecoilValue(metamaskExistence);
 
   useEffect(() => {
-    if (!hasMetaMask()) {
+    if (!hasMetaMask) {
       setCounterMessage('MetaMask拡張機能をインストールしてください。');
       return;
     }
@@ -94,13 +94,12 @@ const Tokens: FC = () => {
   const itemIds = [...Array(itemCount).keys()].map((value) =>
     itemId0.add(ethers.BigNumber.from(delta.mul(value))),
   );
-  // console.log(JSON.stringify(itemIds));
 
   const [abyssCryptoCount, setAbyssCryptoCount] = useState(0);
   const [oysterBasicCount, setOysterBasicCount] = useState(0);
 
   const tokenGate = useCallback(() => {
-    if (!hasMetaMask()) {
+    if (!hasMetaMask) {
       return 'pleaseInstall';
     }
     const { ethereum } = window as unknown as { ethereum: BaseProvider };
@@ -196,7 +195,9 @@ const Tokens: FC = () => {
       ) : (
         <Box>
           {counterMessage}
-          <Button onClick={() => addKakiCoinAsset(chainId!)}>KAKIコインをasset一覧に表示</Button>
+          <Button onClick={() => registerKakiCoinWithWallet(chainId!)}>
+            KAKIコインをasset一覧に表示
+          </Button>
           <Button onClick={addMumbaiNetworkToWallet}>MumbaiテストネットをMetaMaskに追加</Button>
         </Box>
       )}
