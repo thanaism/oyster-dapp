@@ -1,15 +1,19 @@
 import { Button, Stack } from '@chakra-ui/react';
 import { MetaMaskInpageProvider } from '@metamask/providers';
-import { metamaskAddress, metamaskChainId, metamaskVerifiedAddress } from 'atoms/metamaskState';
+import {
+  metamaskAddress,
+  metamaskChainId,
+  metamaskExistence,
+  metamaskVerifiedAddress,
+} from 'atoms/metamaskState';
 import { signInWithCustomToken } from 'firebase/auth';
 import { useState, FC } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { deleteNonce, generateNonce, verifyNonce } from 'utils/functions';
 import {
-  addKakiCoinAsset,
+  registerKakiCoinWithWallet,
   addMumbaiNetworkToWallet,
   ChainIds,
-  hasMetaMask,
   requestAccount,
 } from 'utils/metamask';
 import { auth } from '../utils/firebase';
@@ -20,13 +24,13 @@ export const Login: FC = () => {
   const [user, setUser] = useRecoilState(metamaskVerifiedAddress);
   const account = useRecoilValue(metamaskAddress);
   const chainId = useRecoilValue(metamaskChainId);
+  const hasMetaMask = useRecoilValue(metamaskExistence);
 
   const connect = async () => {
-    if (!hasMetaMask()) {
+    if (!hasMetaMask) {
       alert('MetaMaskをインストールしてください');
       return;
     }
-    // setIsBusy('MetaMaskに接続しています...');
     setIsBusy(true);
     try {
       await requestAccount();
@@ -97,20 +101,22 @@ export const Login: FC = () => {
       ) : (
         ''
       )}
-      {user != null ? <RedButton onClick={signOut}>ログアウト</RedButton> : ''}
-      {user != null && chainId !== ChainIds.MumbaiTestNet ? (
+      {account != null && user != null ? <RedButton onClick={signOut}>ログアウト</RedButton> : ''}
+      {account != null && user != null && chainId !== ChainIds.MumbaiTestNet ? (
         <BlueButton onClick={addMumbaiNetworkToWallet}>Mumbaiに切り替え</BlueButton>
       ) : (
         ''
       )}
-      {user != null && chainId === ChainIds.MumbaiTestNet ? (
-        <LightBlueButton onClick={() => addKakiCoinAsset(chainId)}>
+      {account != null && user != null && chainId === ChainIds.MumbaiTestNet ? (
+        <LightBlueButton onClick={() => registerKakiCoinWithWallet(chainId)}>
           KAKIコインを設定
         </LightBlueButton>
       ) : (
         ''
       )}
       <Button
+        variant="outline"
+        _hover={{ opacity: '0.6', color: 'white' }}
         rounded="full"
         as="a"
         href="https://opensea.io/collection/abysscrypto-polygon"
