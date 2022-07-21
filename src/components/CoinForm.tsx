@@ -10,7 +10,7 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
 import { useRecoilValue } from 'recoil';
 import { metamaskAddress, metamaskChainId, metamaskVerifiedAddress } from 'atoms/metamaskState';
@@ -20,25 +20,19 @@ import { FcIdea } from 'react-icons/fc';
 import { FC, useState } from 'react';
 import { transfer } from 'utils/functions';
 import { ChainIds } from 'utils/metamask';
+import { baseUrl } from 'config/params';
 import { TweetToEarn } from './Twitter';
 import { BlueButton } from './Buttons';
 
 export const CoinForm: FC = () => {
+  const account = useRecoilValue(metamaskAddress);
   const user = useRecoilValue(metamaskVerifiedAddress);
-  if (user != null)
+  if (account != null && user != null)
     return (
       <>
-        <Stack
-          w="full"
-          maxW="lg"
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          // bg={useColorModeValue('white', 'gray.700')}
-          rounded={{ base: 'none', md: 'xl' }}
-          boxShadow={{ base: 'none', md: 'lg' }}
-          p={{ base: 0, md: 6 }}
-          my={12}
-        >
-          <Tabs>
+        <AnnotaionsOutsideForm />
+        <Stack w="full" maxW="xl" p={{ base: 0, md: 6 }} my={12}>
+          <Tabs isFitted variant="enclosed">
             <TabList>
               <Tab>
                 <Icon as={BsTwitter} mr="1" />
@@ -59,7 +53,6 @@ export const CoinForm: FC = () => {
             </TabPanels>
           </Tabs>
         </Stack>
-        <AnnotaionsOutsideForm />
       </>
     );
   return null;
@@ -72,15 +65,9 @@ const AnnotaionsOutsideForm: FC = () => {
 };
 
 const MumbaiDescription: FC = () => (
-  <>
-    {/* <Text fontSize={{ base: 'sm', lg: 'sm' }} color="gray.400">
-      現在、KAKIコインはテスト版としてMumbaiネットワークで運用されています。
-      MumbaiはPolygon準拠のテスト用ネットワークで利用に一切の費用はかかりません。
-    </Text> */}
-    <Text fontSize={{ base: 'sm', lg: 'sm' }} color="gray.400">
-      <Icon as={FcIdea} /> MetaMaskでMumbaiを利用するには「Mumbaiに切り替え」します。
-    </Text>
-  </>
+  <Text fontSize={{ base: 'sm', lg: 'sm' }} color="gray.400">
+    <Icon as={FcIdea} /> MetaMaskでMumbaiを利用するには「Mumbaiに切り替え」します。
+  </Text>
 );
 
 const KakiCoinDescription: FC = () => (
@@ -92,9 +79,8 @@ const KakiCoinDescription: FC = () => (
 
 const requestTransfer = async (to: string, amount: string, phone: string, order: string) => {
   const response = await transfer({ to, amount, phone, order });
-  const { error, hash } = response.data as any;
-  if (hash != null) alert('申請が受理されました。しばらくすると残高に反映されます。');
-  if (error != null) alert(error);
+  const { error, hash } = response.data as { error: string | undefined; hash: string | undefined };
+  return { error, hash };
 };
 
 const EatToEarn: FC = () => {
@@ -102,11 +88,40 @@ const EatToEarn: FC = () => {
   const [enabled, setEnabled] = useState(true);
   const [phone, setPhone] = useState('');
   const [order, setOrder] = useState('');
+  const toast = useToast();
 
   const submit = async () => {
     setEnabled(false);
     try {
-      await requestTransfer(account!, '5', phone, order);
+      const { error, hash } = await requestTransfer(account!, '5', phone, order);
+      if (hash == null && error != null)
+        toast({
+          title: '取得に失敗しました',
+          description: error,
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+        });
+      if (error == null && hash != null)
+        toast({
+          title: '申請が受理されました',
+          description: (
+            <>
+              <Text>しばらくすると残高に反映されます。</Text>
+              <Text
+                as="a"
+                href={`${baseUrl}${hash}`}
+                target="_blank"
+                textDecorationLine="underline"
+              >
+                トランザクション詳細を見る
+              </Text>
+            </>
+          ),
+          status: 'success',
+          // duration: 9000,
+          isClosable: true,
+        });
     } catch {
       alert('取得に失敗しました');
     } finally {
