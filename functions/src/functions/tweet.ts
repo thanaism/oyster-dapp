@@ -1,9 +1,9 @@
 import { BigNumber, Contract, ethers, providers, utils, Wallet } from 'ethers';
 import * as functions from 'firebase-functions';
-// import * as admin from 'firebase-admin';
+import * as admin from 'firebase-admin';
 import { TwitterApi } from 'twitter-api-v2';
 
-// const db = admin.firestore();
+const db = admin.firestore();
 
 const abi = [
   'event Transfer(address indexed from, address indexed to, uint256 value)',
@@ -33,50 +33,52 @@ export const tweet = async (
     appKey == null ||
     appSecret == null
   )
-    return { error: 'missing environment variables' };
+    return { error: 'サーバーが正しくセットアップされていません。管理者にお問い合わせください。' };
 
   const { to, accessToken, accessSecret, text } = data;
-
-  // const address = context.auth.uid;
-  // if (utils.getAddress(address) !== utils.getAddress(to)) return { error: 'address mismatch' };
 
   try {
     const twitterClient = new TwitterApi({ appKey, appSecret, accessToken, accessSecret });
     await twitterClient.v2.tweet(text);
-    // console.log(twitterClient, text);
   } catch {
-    return { error: 'Tweet failed' };
+    return { error: 'ツイートに失敗しました。文字数をご確認ください。' };
   }
 
-  // const refUser = db.collection('users').doc(to);
+  const address = utils.getAddress(to);
 
-  // const userDoc = await refUser.get();
-  // const userData = userDoc.data();
+  const refTweet = db.collection('tweets').doc(address);
+  const tweetDoc = await refTweet.get();
+  const tweetData = tweetDoc.data();
 
-  // if (orderData == null) return { error: 'no order in the database' };
-  // if (orderData?.phone !== phone) return { error: 'wrong phone number' };
-  // if (orderData?.used) return { error: 'already used' };
-  // const { price } = orderData;
-  // const flooredPrice = ((price / 100) | 0) * 10;
-  // await refUser.set({ used: true, address: to }, { merge: true });
+  if (tweetData != null) {
+    const previousDate = tweetData.created.toDate();
+    const currentDate = new Date();
+    const difMs = currentDate.getTime() - previousDate.getTime();
+    const MSEC_PER_DAY = 86400 * 1000;
+    if (difMs < MSEC_PER_DAY) return { error: 'コインが付与されるのは1日1ツイートまでです。' };
+  }
+
+  const newData = { created: admin.firestore.FieldValue.serverTimestamp() };
+  await refTweet.set(newData);
 
   const provider = new providers.AlchemyProvider('maticmum', apiKey);
   const contract = new Contract(contractAddress, abi, provider);
   const wallet = new Wallet(privateKey, provider);
 
   try {
+    // 牡蠣コイン保有数に応じて付与量ブーストして設定（2000ごとにUP）
     const balance = (await contract.balanceOf(to)) as BigNumber;
     const divided = balance.div(ethers.BigNumber.from('2000'));
     const normalized = divided.gt(ethers.BigNumber.from('3')) ? 3 : divided.toNumber();
     const level = Math.floor(normalized / 2000);
     const steps = [15, 20, 40, 40];
     const amount = steps[level];
+
     const contractWithSigner = contract.connect(wallet);
     const txn = await contractWithSigner.transfer(to, utils.parseEther(String(amount)));
-    if (txn == null) throw Error('Error submitting transaction');
+    if (txn == null) throw Error('トランザクションの登録に失敗しました');
     return { hash: txn.hash };
   } catch (e) {
-    // await refUser.set({ used: false }, { merge: true });
-    return { error: `Error Caught in Catch Statement: ${e}` };
+    return { error: `ブロックチェーン処理中にエラーが発生しました: ${e}` };
   }
 };
