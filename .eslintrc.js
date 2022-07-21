@@ -39,7 +39,7 @@ module.exports = {
       },
     ],
     'no-nested-ternary': 'warn',
-    'no-console': 'warn',
+    'no-console': 'off',
     'no-alert': 'warn',
     'no-shadow': 'warn',
     'prefer-template': 'warn',
