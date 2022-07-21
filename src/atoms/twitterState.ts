@@ -10,3 +10,13 @@ export const twitterRedirectDataFetched = atom({
   key: 'TwitterRedirectDataFetched',
   default: false,
 });
+
+export const twitterUsername = atom<string>({
+  key: 'TwitterUsername',
+  default: undefined,
+});
+
+export const twitterDisplayName = atom<string>({
+  key: 'TwitterDisplayName',
+  default: undefined,
+});
